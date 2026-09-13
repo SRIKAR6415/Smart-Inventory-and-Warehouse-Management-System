@@ -99,6 +99,39 @@ void updateProduct(struct Product p[], int n)
         printf("Product not found\n");
     }
 }
+void deleteProduct(struct Product p[], int *n)
+{
+    int id;
+    int i,j;
+    int found = 0;
+
+    printf("Enter product id to delete: ");
+    scanf("%d",&id);
+
+    for(i=0;i<*n;i++)
+    {
+        if(p[i].id == id)
+        {
+            for(j=i;j<*n-1;j++)
+            {
+                p[j] = p[j+1];
+            }
+
+            *n = *n - 1;
+
+            found = 1;
+
+            printf("Product deleted successfully\n");
+
+            break;
+        }
+    }
+
+    if(found == 0)
+    {
+        printf("Product not found\n");
+    }
+}
 
 int main()
 {
@@ -115,6 +148,7 @@ int main()
     displayProducts(p,n);
     updateProduct(p,n);
     displayProducts(p,n);
-
+    deleteProduct(p,&n);
+    displayProducts(p,n);
     return 0;
 }
