@@ -1,5 +1,6 @@
+#include<stdio.h>
 
-#include <stdio.h>
+#define MAX 100
 
 struct Product
 {
@@ -14,38 +15,51 @@ struct Product
 
 int main()
 {
-    struct Product p;
+    struct Product p[MAX];
+    int n,i;
 
-    printf("Enter Product ID: ");
-    scanf("%d", &p.id);
+    printf("Enter number of products: ");
+    scanf("%d",&n);
 
-    printf("Enter Product Name: ");
-    scanf("%s", p.name);
+    for(i=0;i<n;i++)
+    {
+        printf("\nEnter details of product %d\n",i+1);
 
-    printf("Enter Category: ");
-    scanf("%s", p.category);
+        printf("Enter product id: ");
+        scanf("%d",&p[i].id);
 
-    printf("Enter Price: ");
-    scanf("%f", &p.price);
+        printf("Enter product name: ");
+        scanf("%s",p[i].name);
 
-    printf("Enter Stock: ");
-    scanf("%d", &p.stock);
+        printf("Enter category: ");
+        scanf("%s",p[i].category);
 
-    printf("Enter Minimum Stock: ");
-    scanf("%d", &p.minStock);
+        printf("Enter price: ");
+        scanf("%f",&p[i].price);
 
-    printf("Enter Supplier ID: ");
-    scanf("%d", &p.supplierId);
+        printf("Enter stock: ");
+        scanf("%d",&p[i].stock);
 
-    printf("\n--- Product Details ---\n");
+        printf("Enter minimum stock: ");
+        scanf("%d",&p[i].minStock);
 
-    printf("Product ID: %d\n", p.id);
-    printf("Product Name: %s\n", p.name);
-    printf("Category: %s\n", p.category);
-    printf("Price: %.2f\n", p.price);
-    printf("Stock: %d\n", p.stock);
-    printf("Minimum Stock: %d\n", p.minStock);
-    printf("Supplier ID: %d\n", p.supplierId);
+        printf("Enter supplier id: ");
+        scanf("%d",&p[i].supplierId);
+    }
+
+    printf("\nProduct Details\n");
+
+    for(i=0;i<n;i++)
+    {
+        printf("\nProduct %d\n",i+1);
+        printf("Id: %d\n",p[i].id);
+        printf("Name: %s\n",p[i].name);
+        printf("Category: %s\n",p[i].category);
+        printf("Price: %.2f\n",p[i].price);
+        printf("Stock: %d\n",p[i].stock);
+        printf("Minimum Stock: %d\n",p[i].minStock);
+        printf("Supplier Id: %d\n",p[i].supplierId);
+    }
 
     return 0;
 }
