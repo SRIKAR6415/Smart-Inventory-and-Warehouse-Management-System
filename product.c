@@ -37,6 +37,24 @@ void addProduct(struct Product p[], int n)
     printf("Enter supplier id: ");
     scanf("%d",&p[n].supplierId);
 }
+void displayProducts(struct Product p[], int n)
+{
+    int i;
+
+    printf("\nProduct Details\n");
+
+    for(i=0;i<n;i++)
+    {
+        printf("\nProduct %d\n",i+1);
+        printf("Id: %d\n",p[i].id);
+        printf("Name: %s\n",p[i].name);
+        printf("Category: %s\n",p[i].category);
+        printf("Price: %.2f\n",p[i].price);
+        printf("Stock: %d\n",p[i].stock);
+        printf("Minimum Stock: %d\n",p[i].minStock);
+        printf("Supplier Id: %d\n",p[i].supplierId);
+    }
+}
 
 int main()
 {
@@ -50,6 +68,7 @@ int main()
     {
         addProduct(p,i);
     }
+    displayProducts(p,n);
     for(i=0;i<n;i++)
     {
         printf("\nProduct %d\n",i+1);
