@@ -132,23 +132,67 @@ void deleteProduct(struct Product p[], int *n)
         printf("Product not found\n");
     }
 }
+void productMenu(struct Product p[], int *n)
+{
+    int choice;
+
+    do
+    {
+        printf("\n\n");
+        printf("=================================\n");
+        printf("       PRODUCT MANAGEMENT\n");
+        printf("=================================\n");
+        printf("1. Add Product\n");
+        printf("2. Display Products\n");
+        printf("3. Update Product\n");
+        printf("4. Delete Product\n");
+        printf("5. Back\n");
+        printf("Enter your choice: ");
+        scanf("%d",&choice);
+
+        switch(choice)
+        {
+            case 1:
+                if(*n < MAX)
+               {
+                    addProduct(p,*n);
+                    *n = *n + 1;
+               }
+                else
+               {
+                    printf("Product limit reached\n");
+               }
+               break;
+
+            case 2:
+                displayProducts(p,*n);
+                break;
+
+            case 3:
+                updateProduct(p,*n);
+                break;
+
+            case 4:
+                deleteProduct(p,n);
+                break;
+
+            case 5:
+                printf("Returning to main menu...\n");
+                break;
+
+            default:
+                printf("Invalid choice\n");
+        }
+
+    }while(choice != 5);
+}
 
 int main()
 {
     struct Product p[MAX];
-    int n,i;
+    int n = 0;
 
-    printf("Enter number of products: ");
-    scanf("%d",&n);
+    productMenu(p,&n);
 
-    for(i=0;i<n;i++)
-    {
-        addProduct(p,i);
-    }
-    displayProducts(p,n);
-    updateProduct(p,n);
-    displayProducts(p,n);
-    deleteProduct(p,&n);
-    displayProducts(p,n);
     return 0;
 }
