@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #define MAX 100
 
 struct Product
@@ -21,6 +22,18 @@ struct SupplierNode
     char address[100];
     struct SupplierNode *next;
 };
+struct OrderNode
+{
+    int orderId;
+    int productId;
+    int quantity;
+    char type[20];
+    char status[20];
+    struct OrderNode *next;
+};
+struct OrderNode *front = NULL;
+struct OrderNode *rear = NULL;
+struct OrderNode *next;
 struct SupplierNode *head = NULL;
 void addProduct(struct Product p[], int n)
 {
@@ -555,19 +568,504 @@ void inventoryMenu(struct Product p[], int *n)
 
     }while(choice != 5);
 }
+void linearSearch(struct Product p[], int n)
+{
+    int id;
+    int i;
+    int found = 0;
+
+    printf("\nEnter product id to search: ");
+    scanf("%d",&id);
+
+    for(i=0;i<n;i++)
+    {
+        if(p[i].id == id)
+        {
+            printf("\nProduct found\n");
+            printf("Id: %d\n",p[i].id);
+            printf("Name: %s\n",p[i].name);
+            printf("Category: %s\n",p[i].category);
+            printf("Price: %.2f\n",p[i].price);
+            printf("Stock: %d\n",p[i].stock);
+            printf("Minimum Stock: %d\n",p[i].minStock);
+            printf("Supplier Id: %d\n",p[i].supplierId);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if(found == 0)
+    {
+        printf("\nProduct not found\n");
+    }
+}
+void binarySearch(struct Product p[], int n)
+{
+    int id;
+    int low = 0;
+    int high = n - 1;
+    int mid;
+    int found = 0;
+
+    printf("\nEnter product id to search: ");
+    scanf("%d",&id);
+
+    while(low <= high)
+    {
+        mid = (low + high) / 2;
+
+        if(p[mid].id == id)
+        {
+            printf("\nProduct found\n");
+            printf("Id: %d\n",p[mid].id);
+            printf("Name: %s\n",p[mid].name);
+            printf("Category: %s\n",p[mid].category);
+            printf("Price: %.2f\n",p[mid].price);
+            printf("Stock: %d\n",p[mid].stock);
+            printf("Minimum Stock: %d\n",p[mid].minStock);
+            printf("Supplier Id: %d\n",p[mid].supplierId);
+
+            found = 1;
+            break;
+        }
+        else if(id < p[mid].id)
+        {
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+
+    if(found == 0)
+    {
+        printf("\nProduct not found\n");
+    }
+}
+void searchMenu(struct Product p[], int n)
+{
+    int choice;
+
+    do
+    {
+        printf("\n\n");
+        printf("=================================\n");
+        printf("        SEARCH PRODUCT\n");
+        printf("=================================\n");
+        printf("1. Linear Search\n");
+        printf("2. Binary Search\n");
+        printf("3. Back\n");
+        printf("Enter your choice: ");
+        scanf("%d",&choice);
+
+        switch(choice)
+        {
+            case 1:
+                linearSearch(p,n);
+                break;
+
+            case 2:
+                binarySearch(p,n);
+                break;
+
+            case 3:
+                printf("Returning to main menu...\n");
+                break;
+
+            default:
+                printf("Invalid choice\n");
+        }
+
+    }while(choice != 3);
+}
+void selectionSort(struct Product p[], int n)
+{
+    int i,j,min;
+    struct Product temp;
+
+    for(i=0;i<n-1;i++)
+    {
+        min = i;
+
+        for(j=i+1;j<n;j++)
+        {
+            if(p[j].id < p[min].id)
+            {
+                min = j;
+            }
+        }
+
+        if(min != i)
+        {
+            temp = p[i];
+            p[i] = p[min];
+            p[min] = temp;
+        }
+    }
+
+    printf("\nProducts sorted by Product ID\n");
+}
+void selectionSortPrice(struct Product p[], int n)
+{
+    int i,j,min;
+    struct Product temp;
+
+    for(i=0;i<n-1;i++)
+    {
+        min = i;
+
+        for(j=i+1;j<n;j++)
+        {
+            if(p[j].price < p[min].price)
+            {
+                min = j;
+            }
+        }
+
+        if(min != i)
+        {
+            temp = p[i];
+            p[i] = p[min];
+            p[min] = temp;
+        }
+    }
+
+    printf("\nProducts sorted by Price\n");
+}
+void selectionSortStock(struct Product p[], int n)
+{
+    int i,j,min;
+    struct Product temp;
+
+    for(i=0;i<n-1;i++)
+    {
+        min = i;
+
+        for(j=i+1;j<n;j++)
+        {
+            if(p[j].stock < p[min].stock)
+            {
+                min = j;
+            }
+        }
+
+        if(min != i)
+        {
+            temp = p[i];
+            p[i] = p[min];
+            p[min] = temp;
+        }
+    }
+
+    printf("\nProducts sorted by Stock\n");
+}
+void selectionSortName(struct Product p[], int n)
+{
+    int i,j,min;
+    struct Product temp;
+
+    for(i=0;i<n-1;i++)
+    {
+        min = i;
+
+        for(j=i+1;j<n;j++)
+        {
+            if(strcmp(p[j].name,p[min].name) < 0)
+            {
+                min = j;
+            }
+        }
+
+        if(min != i)
+        {
+            temp = p[i];
+            p[i] = p[min];
+            p[min] = temp;
+        }
+    }
+
+    printf("\nProducts sorted by Name\n");
+}
+void sortMenu(struct Product p[], int n)
+{
+    int choice;
+
+    do
+    {
+        printf("\n\n");
+        printf("=================================\n");
+        printf("        SORT INVENTORY\n");
+        printf("=================================\n");
+        printf("1. Sort by Product ID\n");
+        printf("2. Sort by Price\n");
+        printf("3. Sort by Stock\n");
+        printf("4. Sort by Name\n");
+        printf("5. Back\n");
+        printf("Enter your choice: ");
+        scanf("%d",&choice);
+
+        switch(choice)
+        {
+          case 1:
+    selectionSort(p,n);
+    displayProducts(p,n);
+    break;
+
+case 2:
+    selectionSortPrice(p,n);
+    displayProducts(p,n);
+    break;
+
+case 3:
+    selectionSortStock(p,n);
+    displayProducts(p,n);
+    break;
+
+case 4:
+    selectionSortName(p,n);
+    displayProducts(p,n);
+    break;
+
+case 5:
+    printf("Returning to main menu...\n");
+    break;
+
+default:
+    printf("Invalid choice\n");
+        }
+
+    }while(choice != 5);
+}
+void saveProducts(struct Product p[], int n)
+{
+    FILE *fp;
+    int i;
+
+    fp = fopen("products.dat","wb");
+
+    if(fp == NULL)
+    {
+        printf("Unable to open file\n");
+        return;
+    }
+
+    for(i=0;i<n;i++)
+    {
+        fwrite(&p[i],sizeof(struct Product),1,fp);
+    }
+
+    fclose(fp);
+
+    printf("Products saved successfully\n");
+}
+int loadProducts(struct Product p[])
+{
+    FILE *fp;
+    int n = 0;
+
+    fp = fopen("products.dat","rb");
+
+    if(fp == NULL)
+    {
+        return 0;
+    }
+
+    while(fread(&p[n],sizeof(struct Product),1,fp) == 1)
+    {
+        n++;
+    }
+
+    fclose(fp);
+
+    return n;
+}
+void placeOrder()
+{
+    struct OrderNode *temp;
+
+    temp = (struct OrderNode *)malloc(sizeof(struct OrderNode));
+
+    if(temp == NULL)
+    {
+        printf("Memory allocation failed\n");
+        return;
+    }
+
+    printf("\nEnter order id: ");
+    scanf("%d",&temp->orderId);
+
+    printf("Enter product id: ");
+    scanf("%d",&temp->productId);
+
+    printf("Enter quantity: ");
+    scanf("%d",&temp->quantity);
+
+    printf("Enter order type: ");
+    scanf("%s",temp->type);
+
+    strcpy(temp->status,"Pending");
+
+    temp->next = NULL;
+
+    if(front == NULL)
+    {
+        front = temp;
+        rear = temp;
+    }
+    else
+    {
+        rear->next = temp;
+        rear = temp;
+    }
+
+    printf("Order placed successfully\n");
+}
+void processOrder(struct Product p[], int n)
+{
+    struct OrderNode *temp;
+
+    if(front == NULL)
+    {
+        printf("\nNo pending orders\n");
+        return;
+    }
+
+    temp = front;
+
+    printf("\nProcessing Order\n");
+    printf("Order ID: %d\n",temp->orderId);
+    printf("Product ID: %d\n",temp->productId);
+    printf("Quantity: %d\n",temp->quantity);
+    printf("Order Type: %s\n",temp->type);
+    int i;
+int found = 0;
+
+for(i=0;i<n;i++)
+{
+    if(p[i].id == temp->productId)
+    {
+       if(strcmp(temp->type,"Outgoing") == 0 || strcmp(temp->type,"outgoing") == 0)
+        {
+            if(temp->quantity <= p[i].stock)
+            {
+                p[i].stock = p[i].stock - temp->quantity;
+                printf("Stock updated successfully\n");
+                printf("Current stock: %d\n",p[i].stock);
+            }
+            else
+            {
+                printf("Not enough stock available\n");
+            }
+        }
+        else if(strcmp(temp->type,"Incoming") == 0 || strcmp(temp->type,"incoming") == 0)
+        {
+            p[i].stock = p[i].stock + temp->quantity;
+            printf("Stock updated successfully\n");
+            printf("Current stock: %d\n",p[i].stock);
+        }
+
+        found = 1;
+        break;
+    }
+}
+
+if(found == 0)
+{
+    printf("Product not found\n");
+}
+
+    front = front->next;
+
+    if(front == NULL)
+    {
+        rear = NULL;
+    }
+
+    free(temp);
+
+    printf("Order processed successfully\n");
+}
+void displayOrders()
+{
+    struct OrderNode *p;
+
+    if(front == NULL)
+    {
+        printf("\nNo pending orders\n");
+        return;
+    }
+
+    p = front;
+
+    printf("\n=================================\n");
+    printf("        PENDING ORDERS\n");
+    printf("=================================\n");
+
+    while(p != NULL)
+    {
+        printf("\nOrder ID: %d\n",p->orderId);
+        printf("Product ID: %d\n",p->productId);
+        printf("Quantity: %d\n",p->quantity);
+        printf("Order Type: %s\n",p->type);
+        printf("Status: %s\n",p->status);
+
+        p = p->next;
+    }
+}
+void orderMenu(struct Product p[], int n)
+{
+    int choice;
+
+    do
+    {
+        printf("\n\n");
+        printf("=================================\n");
+        printf("        ORDER MANAGEMENT\n");
+        printf("=================================\n");
+        printf("1. Place Order\n");
+        printf("2. Process Order\n");
+        printf("3. Display Pending Orders\n");
+        printf("4. Back\n");
+        printf("Enter your choice: ");
+        scanf("%d",&choice);
+
+        switch(choice)
+        {
+            case 1:
+                placeOrder();
+                break;
+
+            case 2:
+                processOrder(p, n);
+                break;
+
+            case 3:
+                displayOrders();
+                break;
+
+            case 4:
+                printf("Returning to main menu...\n");
+                break;
+
+            default:
+                printf("Invalid choice\n");
+        }
+
+    }while(choice != 4);
+}
 
 int main()
 {
     struct Product p[MAX];
-    int n = 0;
+    int n;
 
-    //productMenu(p,&n);
-    //supplierMenu();
+    n = loadProducts(p);
 
-    addProduct(p,n);
-    n = n + 1;
+    productMenu(p,&n);
 
-    inventoryMenu(p,&n);
+    saveProducts(p,n);
 
     return 0;
 }
