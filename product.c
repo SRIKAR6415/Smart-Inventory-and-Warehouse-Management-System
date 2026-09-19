@@ -401,6 +401,83 @@ void supplierMenu()
 
     }while(choice != 5);
 }
+void saveSuppliers()
+{
+    FILE *fp;
+    struct SupplierNode *p;
+
+    fp = fopen("suppliers.dat","wb");
+
+    if(fp == NULL)
+    {
+        printf("Unable to open file\n");
+        return;
+    }
+
+    p = head;
+
+    while(p != NULL)
+    {
+        fwrite(p,sizeof(struct SupplierNode),1,fp);
+        p = p->next;
+    }
+
+    fclose(fp);
+
+    printf("Suppliers saved successfully\n");
+}
+void loadSuppliers()
+{
+    FILE *fp;
+    struct SupplierNode temp;
+    struct SupplierNode *newNode;
+    struct SupplierNode *p;
+
+    fp = fopen("suppliers.dat","rb");
+
+    if(fp == NULL)
+    {
+        return;
+    }
+
+    while(fread(&temp,sizeof(struct SupplierNode),1,fp) == 1)
+    {
+        newNode = (struct SupplierNode *)malloc(sizeof(struct SupplierNode));
+
+        if(newNode == NULL)
+        {
+            printf("Memory allocation failed\n");
+            fclose(fp);
+            return;
+        }
+
+        newNode->id = temp.id;
+        strcpy(newNode->name,temp.name);
+        strcpy(newNode->phone,temp.phone);
+        strcpy(newNode->email,temp.email);
+        strcpy(newNode->address,temp.address);
+
+        newNode->next = NULL;
+
+        if(head == NULL)
+        {
+            head = newNode;
+        }
+        else
+        {
+            p = head;
+
+            while(p->next != NULL)
+            {
+                p = p->next;
+            }
+
+            p->next = newNode;
+        }
+    }
+
+    fclose(fp);
+}
 void addStock(struct Product p[], int n)
 {
     int id;
@@ -1058,14 +1135,11 @@ void orderMenu(struct Product p[], int n)
 
 int main()
 {
-    struct Product p[MAX];
-    int n;
+    loadSuppliers();
 
-    n = loadProducts(p);
+    supplierMenu();
 
-    productMenu(p,&n);
-
-    saveProducts(p,n);
+    saveSuppliers();
 
     return 0;
 }
