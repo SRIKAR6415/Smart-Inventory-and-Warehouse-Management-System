@@ -37,10 +37,20 @@ struct OrderNode *next;
 struct SupplierNode *head = NULL;
 void addProduct(struct Product p[], int n)
 {
+    int i;
     printf("\nEnter details of product %d\n", n + 1);
 
     printf("Enter product id: ");
-    scanf("%d",&p[n].id);
+scanf("%d",&p[n].id);
+
+for(i=0;i<n;i++)
+{
+    if(p[i].id == p[n].id)
+    {
+        printf("Product id already exists\n");
+        return;
+    }
+}
 
     printf("Enter product name: ");
     scanf("%s",p[n].name);
@@ -52,10 +62,22 @@ void addProduct(struct Product p[], int n)
     scanf("%f",&p[n].price);
 
     printf("Enter stock: ");
-    scanf("%d",&p[n].stock);
+scanf("%d",&p[n].stock);
 
-    printf("Enter minimum stock: ");
-    scanf("%d",&p[n].minStock);
+if(p[n].stock < 0)
+{
+    printf("Stock cannot be negative\n");
+    return;
+}
+
+   printf("Enter minimum stock: ");
+scanf("%d",&p[n].minStock);
+
+if(p[n].minStock < 0)
+{
+    printf("Minimum stock cannot be negative\n");
+    return;
+}
 
     printf("Enter supplier id: ");
     scanf("%d",&p[n].supplierId);
@@ -494,6 +516,11 @@ void addStock(struct Product p[], int n)
         {
             printf("Enter quantity to add: ");
             scanf("%d",&quantity);
+            if(quantity <= 0)
+{
+    printf("Quantity must be greater than zero\n");
+    return;
+}
 
             p[i].stock = p[i].stock + quantity;
 
@@ -526,6 +553,11 @@ void removeStock(struct Product p[], int n)
         {
             printf("Enter quantity to remove: ");
             scanf("%d",&quantity);
+            if(quantity <= 0)
+{
+    printf("Quantity must be greater than zero\n");
+    return;
+}
 
             if(quantity <= p[i].stock)
             {
@@ -977,7 +1009,14 @@ void placeOrder()
     scanf("%d",&temp->productId);
 
     printf("Enter quantity: ");
-    scanf("%d",&temp->quantity);
+scanf("%d",&temp->quantity);
+
+if(temp->quantity <= 0)
+{
+    printf("Quantity must be greater than zero\n");
+    free(temp);
+    return;
+}
 
     printf("Enter order type: ");
     scanf("%s",temp->type);
