@@ -1019,7 +1019,19 @@ if(temp->quantity <= 0)
 }
 
     printf("Enter order type: ");
-    scanf("%s",temp->type);
+scanf("%s",temp->type);
+
+if(strcmp(temp->type,"Incoming") != 0 &&
+   strcmp(temp->type,"incoming") != 0 &&
+   strcmp(temp->type,"Outgoing") != 0 &&
+   strcmp(temp->type,"outgoing") != 0)
+{
+    printf("Invalid order type\n");
+    free(temp);
+    return;
+}
+
+strcpy(temp->status,"Pending");
 
     strcpy(temp->status,"Pending");
 
