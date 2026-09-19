@@ -1036,6 +1036,12 @@ void processOrder(struct Product p[], int n)
                     printf("Stock updated successfully\n");
                     printf("Current stock: %d\n",p[i].stock);
 
+                    if(p[i].stock <= p[i].minStock)
+{
+    printf("LOW STOCK ALERT\n");
+    printf("Product %s is below minimum stock level\n",p[i].name);
+}
+
                     success = 1;
                 }
                 else
