@@ -1002,6 +1002,9 @@ void placeOrder()
 void processOrder(struct Product p[], int n)
 {
     struct OrderNode *temp;
+    int i;
+    int found = 0;
+    int success = 0;
 
     if(front == NULL)
     {
@@ -1016,53 +1019,71 @@ void processOrder(struct Product p[], int n)
     printf("Product ID: %d\n",temp->productId);
     printf("Quantity: %d\n",temp->quantity);
     printf("Order Type: %s\n",temp->type);
-    int i;
-int found = 0;
 
-for(i=0;i<n;i++)
-{
-    if(p[i].id == temp->productId)
+    for(i=0;i<n;i++)
     {
-       if(strcmp(temp->type,"Outgoing") == 0 || strcmp(temp->type,"outgoing") == 0)
+        if(p[i].id == temp->productId)
         {
-            if(temp->quantity <= p[i].stock)
+            found = 1;
+
+            if(strcmp(temp->type,"Outgoing") == 0 ||
+               strcmp(temp->type,"outgoing") == 0)
             {
-                p[i].stock = p[i].stock - temp->quantity;
+                if(temp->quantity <= p[i].stock)
+                {
+                    p[i].stock = p[i].stock - temp->quantity;
+
+                    printf("Stock updated successfully\n");
+                    printf("Current stock: %d\n",p[i].stock);
+
+                    success = 1;
+                }
+                else
+                {
+                    printf("Not enough stock available\n");
+                }
+            }
+            else if(strcmp(temp->type,"Incoming") == 0 ||
+                    strcmp(temp->type,"incoming") == 0)
+            {
+                p[i].stock = p[i].stock + temp->quantity;
+
                 printf("Stock updated successfully\n");
                 printf("Current stock: %d\n",p[i].stock);
+
+                success = 1;
             }
             else
             {
-                printf("Not enough stock available\n");
+                printf("Invalid order type\n");
             }
-        }
-        else if(strcmp(temp->type,"Incoming") == 0 || strcmp(temp->type,"incoming") == 0)
-        {
-            p[i].stock = p[i].stock + temp->quantity;
-            printf("Stock updated successfully\n");
-            printf("Current stock: %d\n",p[i].stock);
-        }
 
-        found = 1;
-        break;
+            break;
+        }
     }
-}
 
-if(found == 0)
-{
-    printf("Product not found\n");
-}
-
-    front = front->next;
-
-    if(front == NULL)
+    if(found == 0)
     {
-        rear = NULL;
+        printf("Product not found\n");
     }
 
-    free(temp);
+    if(success == 1)
+    {
+        front = front->next;
 
-    printf("Order processed successfully\n");
+        if(front == NULL)
+        {
+            rear = NULL;
+        }
+
+        free(temp);
+
+        printf("Order processed successfully\n");
+    }
+    else
+    {
+        printf("Order remains pending\n");
+    }
 }
 void displayOrders()
 {
@@ -1132,14 +1153,157 @@ void orderMenu(struct Product p[], int n)
 
     }while(choice != 4);
 }
+void saveOrders()
+{
+    FILE *fp;
+    struct OrderNode *p;
+
+    fp = fopen("orders.dat","wb");
+
+    if(fp == NULL)
+    {
+        printf("Unable to open file\n");
+        return;
+    }
+
+    p = front;
+
+    while(p != NULL)
+    {
+        fwrite(p,sizeof(struct OrderNode),1,fp);
+        p = p->next;
+    }
+
+    fclose(fp);
+
+    printf("Orders saved successfully\n");
+}
+void loadOrders()
+{
+    FILE *fp;
+    struct OrderNode temp;
+    struct OrderNode *newNode;
+
+    fp = fopen("orders.dat","rb");
+
+    if(fp == NULL)
+    {
+        return;
+    }
+
+    while(fread(&temp,sizeof(struct OrderNode),1,fp) == 1)
+    {
+        newNode = (struct OrderNode *)malloc(sizeof(struct OrderNode));
+
+        if(newNode == NULL)
+        {
+            printf("Memory allocation failed\n");
+            fclose(fp);
+            return;
+        }
+
+        newNode->orderId = temp.orderId;
+        newNode->productId = temp.productId;
+        newNode->quantity = temp.quantity;
+        strcpy(newNode->type,temp.type);
+        strcpy(newNode->status,temp.status);
+
+        newNode->next = NULL;
+
+        if(front == NULL)
+        {
+            front = newNode;
+            rear = newNode;
+        }
+        else
+        {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
+    fclose(fp);
+}
 
 int main()
 {
+    struct Product p[MAX];
+    int n;
+    int choice;
+
+    n = loadProducts(p);
     loadSuppliers();
+    loadOrders();
 
-    supplierMenu();
+    do
+    {
+        printf("\n\n");
+        printf("=================================\n");
+        printf(" SMART INVENTORY MANAGEMENT SYSTEM\n");
+        printf("=================================\n");
+        printf("1. Product Management\n");
+        printf("2. Supplier Management\n");
+        printf("3. Inventory Management\n");
+        printf("4. Order Management\n");
+        printf("5. Search Product\n");
+        printf("6. Sort Inventory\n");
+        printf("7. Low Stock Alerts\n");
+        printf("8. Demand Forecasting\n");
+        printf("9. Reports\n");
+        printf("10. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d",&choice);
 
-    saveSuppliers();
+        switch(choice)
+        {
+            case 1:
+                productMenu(p,&n);
+                break;
+
+            case 2:
+                supplierMenu();
+                break;
+
+            case 3:
+                inventoryMenu(p,&n);
+                break;
+
+            case 4:
+                orderMenu(p,n);
+                break;
+
+            case 5:
+                searchMenu(p,n);
+                break;
+
+            case 6:
+                sortMenu(p,n);
+                break;
+
+            case 7:
+                checkLowStock(p,n);
+                break;
+
+            case 8:
+                printf("Demand Forecasting will be added later\n");
+                break;
+
+            case 9:
+                printf("Reports will be added later\n");
+                break;
+
+            case 10:
+                saveProducts(p,n);
+                saveSuppliers();
+                saveOrders();
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice\n");
+        }
+
+    }while(choice != 10);
 
     return 0;
 }
