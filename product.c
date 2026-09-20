@@ -1302,6 +1302,43 @@ void demandForecast()
         printf("Suggested action: Check stock and plan restocking.\n");
     }
 }
+void generateReport(struct Product p[], int n)
+{
+    int i;
+    int totalStock = 0;
+    int lowStock = 0;
+    int pendingOrders = 0;
+
+    for(i=0;i<n;i++)
+    {
+        totalStock = totalStock + p[i].stock;
+
+        if(p[i].stock <= p[i].minStock)
+        {
+            lowStock++;
+        }
+    }
+
+    struct OrderNode *temp;
+    temp = front;
+
+    while(temp != NULL)
+    {
+        if(strcmp(temp->status,"Pending") == 0)
+        {
+            pendingOrders++;
+        }
+
+        temp = temp->next;
+    }
+
+    printf("\n========== INVENTORY REPORT ==========\n");
+    printf("Total Products       : %d\n",n);
+    printf("Total Stock          : %d\n",totalStock);
+    printf("Low Stock Products   : %d\n",lowStock);
+    printf("Pending Orders       : %d\n",pendingOrders);
+    printf("======================================\n");
+}
 
 int main()
 {
@@ -1367,7 +1404,7 @@ int main()
                 break;
 
             case 9:
-                printf("Reports will be added later\n");
+                generateReport(p,n);
                 break;
 
             case 10:
