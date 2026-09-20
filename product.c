@@ -2,7 +2,6 @@
 #include<stdlib.h>
 #include<string.h>
 #define MAX 100
-
 struct Product
 {
     int id;
@@ -13,6 +12,7 @@ struct Product
     int minStock;
     int supplierId;
 };
+void selectionSort(struct Product p[], int n);
 struct SupplierNode
 {
     int id;
@@ -33,8 +33,8 @@ struct OrderNode
 };
 struct OrderNode *front = NULL;
 struct OrderNode *rear = NULL;
-struct OrderNode *next;
 struct SupplierNode *head = NULL;
+
 void addProduct(struct Product p[], int n)
 {
     int i;
@@ -711,6 +711,7 @@ void linearSearch(struct Product p[], int n)
 }
 void binarySearch(struct Product p[], int n)
 {
+    selectionSort(p,n); // Ensure the array is sorted before binary search
     int id;
     int low = 0;
     int high = n - 1;
@@ -1030,9 +1031,6 @@ if(strcmp(temp->type,"Incoming") != 0 &&
     free(temp);
     return;
 }
-
-strcpy(temp->status,"Pending");
-
     strcpy(temp->status,"Pending");
 
     temp->next = NULL;
@@ -1281,6 +1279,29 @@ void loadOrders()
 
     fclose(fp);
 }
+void demandForecast()
+{
+    int sales[3];
+    int i;
+    float average;
+
+    printf("\nEnter sales for last 3 periods:\n");
+
+    for(i=0;i<3;i++)
+    {
+        printf("Enter sales %d: ",i+1);
+        scanf("%d",&sales[i]);
+    }
+
+    average = (sales[0] + sales[1] + sales[2]) / 3.0;
+
+    printf("\nDemand Forecast = %.2f\n",average);
+
+    if(average > 0)
+    {
+        printf("Suggested action: Check stock and plan restocking.\n");
+    }
+}
 
 int main()
 {
@@ -1342,7 +1363,7 @@ int main()
                 break;
 
             case 8:
-                printf("Demand Forecasting will be added later\n");
+                demandForecast();
                 break;
 
             case 9:
