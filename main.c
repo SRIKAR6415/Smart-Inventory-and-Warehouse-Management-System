@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "product.h"
 #include "supplier.h"
+#include "inventory.h"
 
 int main()
 {
@@ -19,7 +20,8 @@ int main()
         printf("=================================\n");
         printf("1. Product Management\n");
         printf("2. Supplier Management\n");
-        printf("3. Exit\n");
+        printf("3. Inventory Management\n");
+        printf("4. Exit\n");
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
@@ -34,6 +36,10 @@ int main()
                 break;
 
             case 3:
+                inventoryMenu(p,&n);
+                break;
+
+            case 4:
                 printf("Exiting program...\n");
                 break;
 
@@ -41,7 +47,7 @@ int main()
                 printf("Invalid choice\n");
         }
 
-    }while(choice != 3);
+    }while(choice != 4);
 
     saveProducts(p,n);
     saveSuppliers();
