@@ -2,6 +2,7 @@
 #include "product.h"
 #include "supplier.h"
 #include "inventory.h"
+#include "order.h"
 
 int main()
 {
@@ -21,36 +22,44 @@ int main()
         printf("1. Product Management\n");
         printf("2. Supplier Management\n");
         printf("3. Inventory Management\n");
-        printf("4. Exit\n");
+        printf("4. Order Management\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
         switch(choice)
-        {
-            case 1:
-                productMenu(p,&n);
-                break;
+{
+    case 1:
+        productMenu(p,&n);
+        break;
 
-            case 2:
-                supplierMenu();
-                break;
+    case 2:
+        supplierMenu();
+        break;
 
-            case 3:
-                inventoryMenu(p,&n);
-                break;
+    case 3:
+        inventoryMenu(p,&n);
+        break;
 
-            case 4:
-                printf("Exiting program...\n");
-                break;
+    case 4:
+        orderMenu(p,n);
+        break;
 
-            default:
-                printf("Invalid choice\n");
-        }
+    case 5:
+        printf("Exiting program...\n");
+        break;
 
-    }while(choice != 4);
+    default:
+        printf("Invalid choice\n");
+}
+    }while(choice != 5);
+    n = loadProducts(p);
+    loadSuppliers();
+    loadOrders();
 
     saveProducts(p,n);
     saveSuppliers();
+    saveOrders();
 
     return 0;
 }
