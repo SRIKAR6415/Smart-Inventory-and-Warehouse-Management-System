@@ -5,6 +5,7 @@
 #include "order.h"
 #include "search_sort.h"
 #include "forecast.h"
+#include "reports.h"
 
 int main()
 {
@@ -29,7 +30,8 @@ int main()
         printf("6. Sort Inventory\n");
         printf("7. Low Stock Alerts\n");
         printf("8. Demand Forecasting\n");
-        printf("9. Exit\n");
+        printf("9. Reports\n");
+        printf("10. Exit\n");
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
@@ -68,13 +70,17 @@ int main()
         break;
 
     case 9:
+        displayReports(p,n);
+        break;
+
+    case 10:
         printf("Exiting program...\n");
         break;
 
     default:
         printf("Invalid choice\n");
 }
-    }while(choice != 9);
+    }while(choice != 10);
     n = loadProducts(p);
     loadSuppliers();
     loadOrders();
