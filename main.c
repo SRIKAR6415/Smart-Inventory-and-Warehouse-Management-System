@@ -3,6 +3,8 @@
 #include "supplier.h"
 #include "inventory.h"
 #include "order.h"
+#include "search_sort.h"
+#include "forecast.h"
 
 int main()
 {
@@ -23,11 +25,15 @@ int main()
         printf("2. Supplier Management\n");
         printf("3. Inventory Management\n");
         printf("4. Order Management\n");
-        printf("5. Exit\n");
+        printf("5. Search Product\n");
+        printf("6. Sort Inventory\n");
+        printf("7. Low Stock Alerts\n");
+        printf("8. Demand Forecasting\n");
+        printf("9. Exit\n");
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+       switch(choice)
 {
     case 1:
         productMenu(p,&n);
@@ -46,13 +52,29 @@ int main()
         break;
 
     case 5:
+        searchProduct(p,n);
+        break;
+
+    case 6:
+        selectionSort(p,n);
+        break;
+
+    case 7:
+        checkLowStock(p,n);
+        break;
+
+    case 8:
+        demandForecast(p,n);
+        break;
+
+    case 9:
         printf("Exiting program...\n");
         break;
 
     default:
         printf("Invalid choice\n");
 }
-    }while(choice != 5);
+    }while(choice != 9);
     n = loadProducts(p);
     loadSuppliers();
     loadOrders();
