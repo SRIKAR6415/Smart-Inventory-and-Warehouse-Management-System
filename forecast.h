@@ -4,5 +4,6 @@
 #include "product.h"
 
 void demandForecast(struct Product p[], int n);
+int getForecast(int productId);
 
 #endif

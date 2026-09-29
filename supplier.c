@@ -8,6 +8,7 @@ struct SupplierNode *head = NULL;
 void addSupplier()
 {
     struct SupplierNode *temp;
+    struct SupplierNode *p;
 
     temp = (struct SupplierNode *)malloc(sizeof(struct SupplierNode));
 
@@ -20,17 +21,31 @@ void addSupplier()
     printf("\nEnter supplier id: ");
     scanf("%d",&temp->id);
 
+    p = head;
+
+    while(p != NULL)
+    {
+        if(p->id == temp->id)
+        {
+            printf("Supplier id already exists\n");
+            free(temp);
+            return;
+        }
+
+        p = p->next;
+    }
+
     printf("Enter supplier name: ");
-    scanf("%s",temp->name);
+    scanf("%49s",temp->name);
 
     printf("Enter phone: ");
-    scanf("%s",temp->phone);
+    scanf("%19s",temp->phone);
 
     printf("Enter email: ");
-    scanf("%s",temp->email);
+    scanf("%49s",temp->email);
 
     printf("Enter address: ");
-    scanf("%s",temp->address);
+    scanf("%99s",temp->address);
 
     temp->next = NULL;
 
@@ -40,8 +55,6 @@ void addSupplier()
     }
     else
     {
-        struct SupplierNode *p;
-
         p = head;
 
         while(p->next != NULL)

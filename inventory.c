@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "product.h"
 #include "inventory.h"
+#include "forecast.h"
 
 void addStock(struct Product p[], int n)
 {
@@ -115,21 +116,50 @@ void checkLowStock(struct Product p[], int n)
 {
     int i;
     int found = 0;
+    int forecast;
+    int restock;
 
     printf("\n=================================\n");
-    printf("         LOW STOCK ALERT\n");
+    printf("       LOW STOCK INTELLIGENCE\n");
     printf("=================================\n");
 
     for(i=0;i<n;i++)
     {
         if(p[i].stock <= p[i].minStock)
         {
+            found = 1;
+
+            forecast = getForecast(p[i].id);
+
             printf("\nProduct ID: %d\n",p[i].id);
             printf("Product Name: %s\n",p[i].name);
             printf("Current Stock: %d\n",p[i].stock);
             printf("Minimum Stock: %d\n",p[i].minStock);
 
-            found = 1;
+            if(forecast > 0)
+            {
+                printf("Predicted Demand: %d\n",forecast);
+
+                if(p[i].stock < forecast)
+                {
+                    restock = forecast - p[i].stock;
+
+                    printf("Status: CRITICAL\n");
+                    printf("Suggested Restock Quantity: %d\n",restock);
+                }
+                else
+                {
+                    printf("Status: LOW STOCK\n");
+                    printf("Suggested Restock Quantity: 0\n");
+                }
+            }
+            else
+            {
+                printf("Predicted Demand: No data\n");
+                printf("Status: LOW STOCK\n");
+                printf("Suggested Restock Quantity: %d\n",
+                       p[i].minStock-p[i].stock);
+            }
         }
     }
 

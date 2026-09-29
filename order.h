@@ -1,5 +1,8 @@
 #ifndef ORDER_H
+
 #define ORDER_H
+
+#include "product.h"
 
 struct OrderNode
 {
@@ -12,14 +15,19 @@ struct OrderNode
 };
 
 extern struct OrderNode *front;
+
 extern struct OrderNode *rear;
 
 void placeOrder();
+
 void processOrder(struct Product p[], int n);
+
 void displayOrders();
+
 void orderMenu(struct Product p[], int n);
 
 void saveOrders();
+
 void loadOrders();
 
 #endif

@@ -3,6 +3,7 @@
 #include<string.h>
 #include "product.h"
 #include "order.h"
+#include "sales_history.h"
 
 struct OrderNode *front = NULL;
 struct OrderNode *rear = NULL;
@@ -10,6 +11,8 @@ struct OrderNode *rear = NULL;
 void placeOrder()
 {
     struct OrderNode *temp;
+    struct OrderNode *p;
+    int duplicate = 0;
 
     temp = (struct OrderNode *)malloc(sizeof(struct OrderNode));
 
@@ -21,6 +24,26 @@ void placeOrder()
 
     printf("\nEnter order id: ");
     scanf("%d",&temp->orderId);
+
+    p = front;
+
+    while(p != NULL)
+    {
+        if(p->orderId == temp->orderId)
+        {
+            duplicate = 1;
+            break;
+        }
+
+        p = p->next;
+    }
+
+    if(duplicate == 1)
+    {
+        printf("Order id already exists\n");
+        free(temp);
+        return;
+    }
 
     printf("Enter product id: ");
     scanf("%d",&temp->productId);
@@ -36,7 +59,7 @@ void placeOrder()
     }
 
     printf("Enter order type: ");
-    scanf("%s",temp->type);
+    scanf("%19s",temp->type);
 
     if(strcmp(temp->type,"Incoming") != 0 &&
        strcmp(temp->type,"incoming") != 0 &&
@@ -100,13 +123,16 @@ void processOrder(struct Product p[], int n)
                 {
                     p[i].stock = p[i].stock - temp->quantity;
 
+                    recordSale(temp->productId,temp->quantity);
+
                     printf("Stock updated successfully\n");
                     printf("Current stock: %d\n",p[i].stock);
 
                     if(p[i].stock <= p[i].minStock)
                     {
                         printf("LOW STOCK ALERT\n");
-                        printf("Product %s is below minimum stock level\n",p[i].name);
+                        printf("Product %s is below minimum stock level\n",
+                               p[i].name);
                     }
 
                     success = 1;
@@ -125,10 +151,6 @@ void processOrder(struct Product p[], int n)
                 printf("Current stock: %d\n",p[i].stock);
 
                 success = 1;
-            }
-            else
-            {
-                printf("Invalid order type\n");
             }
 
             break;
@@ -246,7 +268,12 @@ void saveOrders()
 
     while(p != NULL)
     {
-        fwrite(p,sizeof(struct OrderNode),1,fp);
+        fwrite(&p->orderId,sizeof(int),1,fp);
+        fwrite(&p->productId,sizeof(int),1,fp);
+        fwrite(&p->quantity,sizeof(int),1,fp);
+        fwrite(p->type,sizeof(p->type),1,fp);
+        fwrite(p->status,sizeof(p->status),1,fp);
+
         p = p->next;
     }
 
@@ -258,7 +285,6 @@ void saveOrders()
 void loadOrders()
 {
     FILE *fp;
-    struct OrderNode temp;
     struct OrderNode *newNode;
 
     fp = fopen("orders.dat","rb");
@@ -268,7 +294,7 @@ void loadOrders()
         return;
     }
 
-    while(fread(&temp,sizeof(struct OrderNode),1,fp) == 1)
+    while(1)
     {
         newNode = (struct OrderNode *)malloc(sizeof(struct OrderNode));
 
@@ -279,11 +305,16 @@ void loadOrders()
             return;
         }
 
-        newNode->orderId = temp.orderId;
-        newNode->productId = temp.productId;
-        newNode->quantity = temp.quantity;
-        strcpy(newNode->type,temp.type);
-        strcpy(newNode->status,temp.status);
+        if(fread(&newNode->orderId,sizeof(int),1,fp) != 1)
+        {
+            free(newNode);
+            break;
+        }
+
+        fread(&newNode->productId,sizeof(int),1,fp);
+        fread(&newNode->quantity,sizeof(int),1,fp);
+        fread(newNode->type,sizeof(newNode->type),1,fp);
+        fread(newNode->status,sizeof(newNode->status),1,fp);
 
         newNode->next = NULL;
 
