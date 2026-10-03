@@ -12,7 +12,6 @@ void placeOrder()
 {
     struct OrderNode *temp;
     struct OrderNode *p;
-    int duplicate = 0;
 
     temp = (struct OrderNode *)malloc(sizeof(struct OrderNode));
 
@@ -31,18 +30,12 @@ void placeOrder()
     {
         if(p->orderId == temp->orderId)
         {
-            duplicate = 1;
-            break;
+            printf("Order id already exists\n");
+            free(temp);
+            return;
         }
 
         p = p->next;
-    }
-
-    if(duplicate == 1)
-    {
-        printf("Order id already exists\n");
-        free(temp);
-        return;
     }
 
     printf("Enter product id: ");
@@ -72,7 +65,6 @@ void placeOrder()
     }
 
     strcpy(temp->status,"Pending");
-
     temp->next = NULL;
 
     if(front == NULL)
@@ -93,8 +85,7 @@ void processOrder(struct Product p[], int n)
 {
     struct OrderNode *temp;
     int i;
-    int found = 0;
-    int success = 0;
+    int found;
 
     if(front == NULL)
     {
@@ -103,6 +94,7 @@ void processOrder(struct Product p[], int n)
     }
 
     temp = front;
+    found = 0;
 
     printf("\nProcessing Order\n");
     printf("Order ID: %d\n",temp->orderId);
@@ -134,49 +126,38 @@ void processOrder(struct Product p[], int n)
                         printf("Product %s is below minimum stock level\n",
                                p[i].name);
                     }
-
-                    success = 1;
                 }
                 else
                 {
                     printf("Not enough stock available\n");
+                    return;
                 }
             }
-            else if(strcmp(temp->type,"Incoming") == 0 ||
-                    strcmp(temp->type,"incoming") == 0)
+            else
             {
                 p[i].stock = p[i].stock + temp->quantity;
 
                 printf("Stock updated successfully\n");
                 printf("Current stock: %d\n",p[i].stock);
-
-                success = 1;
             }
 
-            break;
+            front = front->next;
+
+            if(front == NULL)
+            {
+                rear = NULL;
+            }
+
+            free(temp);
+
+            printf("Order processed successfully\n");
+            return;
         }
     }
 
     if(found == 0)
     {
         printf("Product not found\n");
-    }
-
-    if(success == 1)
-    {
-        front = front->next;
-
-        if(front == NULL)
-        {
-            rear = NULL;
-        }
-
-        free(temp);
-
-        printf("Order processed successfully\n");
-    }
-    else
-    {
         printf("Order remains pending\n");
     }
 }
@@ -213,7 +194,9 @@ void orderMenu(struct Product p[], int n)
 {
     int choice;
 
-    do
+    choice = 0;
+
+    while(choice != 4)
     {
         printf("\n\n");
         printf("=================================\n");
@@ -226,29 +209,27 @@ void orderMenu(struct Product p[], int n)
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+        if(choice == 1)
         {
-            case 1:
-                placeOrder();
-                break;
-
-            case 2:
-                processOrder(p,n);
-                break;
-
-            case 3:
-                displayOrders();
-                break;
-
-            case 4:
-                printf("Returning to main menu...\n");
-                break;
-
-            default:
-                printf("Invalid choice\n");
+            placeOrder();
         }
-
-    }while(choice != 4);
+        else if(choice == 2)
+        {
+            processOrder(p,n);
+        }
+        else if(choice == 3)
+        {
+            displayOrders();
+        }
+        else if(choice == 4)
+        {
+            printf("Returning to main menu...\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+    }
 }
 
 void saveOrders()

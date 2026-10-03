@@ -6,9 +6,8 @@
 void addStock(struct Product p[], int n)
 {
     int id;
-    int quantity;
+    int qty;
     int i;
-    int found = 0;
 
     printf("\nEnter product id: ");
     scanf("%d",&id);
@@ -18,36 +17,32 @@ void addStock(struct Product p[], int n)
         if(p[i].id == id)
         {
             printf("Enter quantity to add: ");
-            scanf("%d",&quantity);
+            scanf("%d",&qty);
 
-            if(quantity <= 0)
+            if(qty > 0)
+            {
+                p[i].stock = p[i].stock + qty;
+
+                printf("Stock added successfully\n");
+                printf("Current stock: %d\n",p[i].stock);
+            }
+            else
             {
                 printf("Quantity must be greater than zero\n");
-                return;
             }
 
-            p[i].stock = p[i].stock + quantity;
-
-            printf("Stock added successfully\n");
-            printf("Current stock: %d\n",p[i].stock);
-
-            found = 1;
-            break;
+            return;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void removeStock(struct Product p[], int n)
 {
     int id;
-    int quantity;
+    int qty;
     int i;
-    int found = 0;
 
     printf("\nEnter product id: ");
     scanf("%d",&id);
@@ -57,42 +52,37 @@ void removeStock(struct Product p[], int n)
         if(p[i].id == id)
         {
             printf("Enter quantity to remove: ");
-            scanf("%d",&quantity);
+            scanf("%d",&qty);
 
-            if(quantity <= 0)
+            if(qty <= 0)
             {
                 printf("Quantity must be greater than zero\n");
                 return;
             }
 
-            if(quantity <= p[i].stock)
-            {
-                p[i].stock = p[i].stock - quantity;
-
-                printf("Stock removed successfully\n");
-                printf("Current stock: %d\n",p[i].stock);
-            }
-            else
+            if(qty > p[i].stock)
             {
                 printf("Not enough stock available\n");
+                return;
             }
 
-            found = 1;
-            break;
+            p[i].stock = p[i].stock - qty;
+
+            printf("Stock removed successfully\n");
+            printf("Current stock: %d\n",p[i].stock);
+
+            return;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void viewInventory(struct Product p[], int n)
 {
     int i;
 
-    if(n == 0)
+    if(n <= 0)
     {
         printf("\nNo products available\n");
         return;
@@ -115,9 +105,9 @@ void viewInventory(struct Product p[], int n)
 void checkLowStock(struct Product p[], int n)
 {
     int i;
-    int found = 0;
-    int forecast;
-    int restock;
+    int demand;
+    int need;
+    int low = 0;
 
     printf("\n=================================\n");
     printf("       LOW STOCK INTELLIGENCE\n");
@@ -127,25 +117,32 @@ void checkLowStock(struct Product p[], int n)
     {
         if(p[i].stock <= p[i].minStock)
         {
-            found = 1;
-
-            forecast = getForecast(p[i].id);
+            low = 1;
+            demand = getForecast(p[i].id);
 
             printf("\nProduct ID: %d\n",p[i].id);
             printf("Product Name: %s\n",p[i].name);
             printf("Current Stock: %d\n",p[i].stock);
             printf("Minimum Stock: %d\n",p[i].minStock);
 
-            if(forecast > 0)
+            if(demand == 0)
             {
-                printf("Predicted Demand: %d\n",forecast);
+                need = p[i].minStock - p[i].stock;
 
-                if(p[i].stock < forecast)
+                printf("Predicted Demand: No data\n");
+                printf("Status: LOW STOCK\n");
+                printf("Suggested Restock Quantity: %d\n",need);
+            }
+            else
+            {
+                printf("Predicted Demand: %d\n",demand);
+
+                if(demand > p[i].stock)
                 {
-                    restock = forecast - p[i].stock;
+                    need = demand - p[i].stock;
 
                     printf("Status: CRITICAL\n");
-                    printf("Suggested Restock Quantity: %d\n",restock);
+                    printf("Suggested Restock Quantity: %d\n",need);
                 }
                 else
                 {
@@ -153,17 +150,10 @@ void checkLowStock(struct Product p[], int n)
                     printf("Suggested Restock Quantity: 0\n");
                 }
             }
-            else
-            {
-                printf("Predicted Demand: No data\n");
-                printf("Status: LOW STOCK\n");
-                printf("Suggested Restock Quantity: %d\n",
-                       p[i].minStock-p[i].stock);
-            }
         }
     }
 
-    if(found == 0)
+    if(low == 0)
     {
         printf("\nNo low stock products\n");
     }
@@ -173,7 +163,9 @@ void inventoryMenu(struct Product p[], int *n)
 {
     int choice;
 
-    do
+    choice = 0;
+
+    while(choice != 5)
     {
         printf("\n\n");
         printf("=================================\n");
@@ -187,31 +179,29 @@ void inventoryMenu(struct Product p[], int *n)
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+        if(choice == 1)
         {
-            case 1:
-                addStock(p,*n);
-                break;
-
-            case 2:
-                removeStock(p,*n);
-                break;
-
-            case 3:
-                viewInventory(p,*n);
-                break;
-
-            case 4:
-                checkLowStock(p,*n);
-                break;
-
-            case 5:
-                printf("Returning to main menu...\n");
-                break;
-
-            default:
-                printf("Invalid choice\n");
+            addStock(p,*n);
         }
-
-    }while(choice != 5);
+        else if(choice == 2)
+        {
+            removeStock(p,*n);
+        }
+        else if(choice == 3)
+        {
+            viewInventory(p,*n);
+        }
+        else if(choice == 4)
+        {
+            checkLowStock(p,*n);
+        }
+        else if(choice == 5)
+        {
+            printf("Returning to main menu...\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+    }
 }

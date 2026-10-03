@@ -98,7 +98,6 @@ void searchSupplier()
 {
     struct SupplierNode *p;
     int id;
-    int found = 0;
 
     printf("\nEnter supplier id to search: ");
     scanf("%d",&id);
@@ -115,18 +114,13 @@ void searchSupplier()
             printf("Phone: %s\n",p->phone);
             printf("Email: %s\n",p->email);
             printf("Address: %s\n",p->address);
-
-            found = 1;
-            break;
+            return;
         }
 
         p = p->next;
     }
 
-    if(found == 0)
-    {
-        printf("Supplier not found\n");
-    }
+    printf("Supplier not found\n");
 }
 
 void deleteSupplier()
@@ -134,7 +128,6 @@ void deleteSupplier()
     struct SupplierNode *p;
     struct SupplierNode *prev;
     int id;
-    int found = 0;
 
     printf("\nEnter supplier id to delete: ");
     scanf("%d",&id);
@@ -157,28 +150,24 @@ void deleteSupplier()
 
             free(p);
 
-            found = 1;
-
             printf("Supplier deleted successfully\n");
-
-            break;
+            return;
         }
 
         prev = p;
         p = p->next;
     }
 
-    if(found == 0)
-    {
-        printf("Supplier not found\n");
-    }
+    printf("Supplier not found\n");
 }
 
 void supplierMenu()
 {
     int choice;
 
-    do
+    choice = 0;
+
+    while(choice != 5)
     {
         printf("\n\n");
         printf("=================================\n");
@@ -192,33 +181,31 @@ void supplierMenu()
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+        if(choice == 1)
         {
-            case 1:
-                addSupplier();
-                break;
-
-            case 2:
-                displaySuppliers();
-                break;
-
-            case 3:
-                searchSupplier();
-                break;
-
-            case 4:
-                deleteSupplier();
-                break;
-
-            case 5:
-                printf("Returning to main menu...\n");
-                break;
-
-            default:
-                printf("Invalid choice\n");
+            addSupplier();
         }
-
-    }while(choice != 5);
+        else if(choice == 2)
+        {
+            displaySuppliers();
+        }
+        else if(choice == 3)
+        {
+            searchSupplier();
+        }
+        else if(choice == 4)
+        {
+            deleteSupplier();
+        }
+        else if(choice == 5)
+        {
+            printf("Returning to main menu...\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+    }
 }
 
 void saveSuppliers()
@@ -277,7 +264,6 @@ void loadSuppliers()
         strcpy(newNode->phone,temp.phone);
         strcpy(newNode->email,temp.email);
         strcpy(newNode->address,temp.address);
-
         newNode->next = NULL;
 
         if(head == NULL)

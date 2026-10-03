@@ -15,11 +15,14 @@ int main()
     int choice;
 
     n = loadProducts(p);
+
     loadSuppliers();
     loadOrders();
     loadSalesHistory();
 
-    do
+    choice = 0;
+
+    while(choice != 12)
     {
         printf("\n\n");
         printf("=================================\n");
@@ -37,64 +40,63 @@ int main()
         printf("10. Demand Forecasting\n");
         printf("11. Reports\n");
         printf("12. Exit\n");
+
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+        if(choice == 1)
         {
-            case 1:
-                productMenu(p,&n);
-                break;
-
-            case 2:
-                supplierMenu();
-                break;
-
-            case 3:
-                inventoryMenu(p,&n);
-                break;
-
-            case 4:
-                orderMenu(p,n);
-                break;
-
-            case 5:
-                searchProduct(p,n);
-                break;
-
-            case 6:
-                binarySearch(p,n);
-                break;
-
-            case 7:
-                selectionSort(p,n);
-                break;
-
-            case 8:
-                displaySalesHistory();
-                break;
-
-            case 9:
-                checkLowStock(p,n);
-                break;
-
-            case 10:
-                demandForecast(p,n);
-                break;
-
-            case 11:
-                displayReports(p,n);
-                break;
-
-            case 12:
-                printf("Exiting program...\n");
-                break;
-
-            default:
-                printf("Invalid choice\n");
+            productMenu(p,&n);
         }
-
-    }while(choice != 12);
+        else if(choice == 2)
+        {
+            supplierMenu();
+        }
+        else if(choice == 3)
+        {
+            inventoryMenu(p,&n);
+        }
+        else if(choice == 4)
+        {
+            orderMenu(p,n);
+        }
+        else if(choice == 5)
+        {
+            searchProduct(p,n);
+        }
+        else if(choice == 6)
+        {
+            binarySearch(p,n);
+        }
+        else if(choice == 7)
+        {
+            selectionSort(p,n);
+        }
+        else if(choice == 8)
+        {
+            displaySalesHistory();
+        }
+        else if(choice == 9)
+        {
+            checkLowStock(p,n);
+        }
+        else if(choice == 10)
+        {
+            demandForecast(p,n);
+        }
+        else if(choice == 11)
+        {
+            displayReports(p,n);
+        }
+        else if(choice == 12)
+        {
+            printf("Exiting program...\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+    }
 
     saveProducts(p,n);
     saveSuppliers();

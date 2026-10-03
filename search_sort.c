@@ -6,7 +6,6 @@ void searchProduct(struct Product p[], int n)
 {
     int id;
     int i;
-    int found = 0;
 
     printf("\nEnter product id to search: ");
     scanf("%d",&id);
@@ -23,28 +22,22 @@ void searchProduct(struct Product p[], int n)
             printf("Stock: %d\n",p[i].stock);
             printf("Minimum Stock: %d\n",p[i].minStock);
             printf("Supplier ID: %d\n",p[i].supplierId);
-
-            found = 1;
-            break;
+            return;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void binarySearch(struct Product p[], int n)
 {
-    struct Product temp;
-    int i;
-    int j;
+    int id;
     int low;
     int high;
     int mid;
-    int id;
-    int found = 0;
+    int i;
+    int j;
+    struct Product temp;
 
     for(i=0;i<n-1;i++)
     {
@@ -63,11 +56,11 @@ void binarySearch(struct Product p[], int n)
     scanf("%d",&id);
 
     low = 0;
-    high = n - 1;
+    high = n-1;
 
     while(low <= high)
     {
-        mid = (low + high) / 2;
+        mid = (low+high)/2;
 
         if(p[mid].id == id)
         {
@@ -79,24 +72,20 @@ void binarySearch(struct Product p[], int n)
             printf("Stock: %d\n",p[mid].stock);
             printf("Minimum Stock: %d\n",p[mid].minStock);
             printf("Supplier ID: %d\n",p[mid].supplierId);
-
-            found = 1;
-            break;
+            return;
         }
-        else if(id < p[mid].id)
+
+        if(id < p[mid].id)
         {
-            high = mid - 1;
+            high = mid-1;
         }
         else
         {
-            low = mid + 1;
+            low = mid+1;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void selectionSort(struct Product p[], int n)

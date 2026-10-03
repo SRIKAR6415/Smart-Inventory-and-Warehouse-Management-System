@@ -7,14 +7,12 @@
 void displayReports(struct Product p[], int n)
 {
     int i;
-    int totalStock = 0;
-    int lowStock = 0;
-    int totalSales = 0;
-    int salesCount = 0;
-    int sales[3];
-    int count;
+    int totalStock;
+    int lowStock;
+    int totalSales;
+    int salesCount;
     int forecast;
-    int j;
+    int quantity;
 
     if(n == 0)
     {
@@ -22,13 +20,16 @@ void displayReports(struct Product p[], int n)
         return;
     }
 
+    totalStock = 0;
+    lowStock = 0;
+
     for(i=0;i<n;i++)
     {
         totalStock = totalStock + p[i].stock;
 
         if(p[i].stock <= p[i].minStock)
         {
-            lowStock++;
+            lowStock = lowStock + 1;
         }
     }
 
@@ -40,23 +41,23 @@ void displayReports(struct Product p[], int n)
     printf("Total Stock: %d\n",totalStock);
     printf("Low Stock Products: %d\n",lowStock);
 
+    totalSales = getTotalSales();
+    salesCount = getSalesCount();
+
     printf("\n=================================\n");
     printf("        SALES PERFORMANCE\n");
     printf("=================================\n");
 
-    totalSales = getTotalSales();
-    salesCount = getSalesCount();
-
     printf("\nRecorded Sales Quantity: %d\n",totalSales);
 
-    if(salesCount > 0)
+    if(salesCount == 0)
     {
-        printf("Average Sale Quantity: %d\n",
-               totalSales/salesCount);
+        printf("Average Sale Quantity: No data\n");
     }
     else
     {
-        printf("Average Sale Quantity: No data\n");
+        printf("Average Sale Quantity: %d\n",
+               totalSales/salesCount);
     }
 
     printf("\n=================================\n");
@@ -78,9 +79,10 @@ void displayReports(struct Product p[], int n)
 
             if(p[i].stock < forecast)
             {
+                quantity = forecast - p[i].stock;
+
                 printf("Restock Required: Yes\n");
-                printf("Suggested Quantity: %d\n",
-                       forecast-p[i].stock);
+                printf("Suggested Quantity: %d\n",quantity);
             }
             else
             {
@@ -93,9 +95,10 @@ void displayReports(struct Product p[], int n)
 
             if(p[i].stock <= p[i].minStock)
             {
+                quantity = p[i].minStock - p[i].stock;
+
                 printf("Restock Required: Yes\n");
-                printf("Suggested Quantity: %d\n",
-                       p[i].minStock-p[i].stock);
+                printf("Suggested Quantity: %d\n",quantity);
             }
             else
             {

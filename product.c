@@ -5,7 +5,7 @@ int addProduct(struct Product p[], int n)
 {
     int i;
 
-    printf("\nEnter details of product %d\n", n + 1);
+    printf("\nEnter product details\n");
 
     printf("Enter product id: ");
     scanf("%d",&p[n].id);
@@ -55,6 +55,8 @@ int addProduct(struct Product p[], int n)
     printf("Enter supplier id: ");
     scanf("%d",&p[n].supplierId);
 
+    printf("Product added successfully\n");
+
     return 1;
 }
 
@@ -87,7 +89,6 @@ void updateProduct(struct Product p[], int n)
 {
     int id;
     int i;
-    int found = 0;
 
     printf("Enter product id to update: ");
     scanf("%d",&id);
@@ -132,25 +133,19 @@ void updateProduct(struct Product p[], int n)
             printf("Enter new supplier id: ");
             scanf("%d",&p[i].supplierId);
 
-            found = 1;
-
             printf("Product updated successfully\n");
-
-            break;
+            return;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void deleteProduct(struct Product p[], int *n)
 {
     int id;
-    int i,j;
-    int found = 0;
+    int i;
+    int j;
 
     printf("Enter product id to delete: ");
     scanf("%d",&id);
@@ -164,27 +159,23 @@ void deleteProduct(struct Product p[], int *n)
                 p[j] = p[j+1];
             }
 
-            *n = *n - 1;
-
-            found = 1;
+            *n = *n-1;
 
             printf("Product deleted successfully\n");
-
-            break;
+            return;
         }
     }
 
-    if(found == 0)
-    {
-        printf("Product not found\n");
-    }
+    printf("Product not found\n");
 }
 
 void productMenu(struct Product p[], int *n)
 {
     int choice;
 
-    do
+    choice = 0;
+
+    while(choice != 5)
     {
         printf("\n\n");
         printf("=================================\n");
@@ -198,43 +189,41 @@ void productMenu(struct Product p[], int *n)
         printf("Enter your choice: ");
         scanf("%d",&choice);
 
-        switch(choice)
+        if(choice == 1)
         {
-            case 1:
-                if(*n < MAX)
+            if(*n < MAX)
+            {
+                if(addProduct(p,*n) == 1)
                 {
-                    if(addProduct(p,*n) == 1)
-                    {
-                        *n = *n + 1;
-                    }
+                    *n = *n+1;
                 }
-                else
-                {
-                    printf("Product limit reached\n");
-                }
-                break;
-
-            case 2:
-                displayProducts(p,*n);
-                break;
-
-            case 3:
-                updateProduct(p,*n);
-                break;
-
-            case 4:
-                deleteProduct(p,n);
-                break;
-
-            case 5:
-                printf("Returning to main menu...\n");
-                break;
-
-            default:
-                printf("Invalid choice\n");
+            }
+            else
+            {
+                printf("Product limit reached\n");
+            }
         }
-
-    }while(choice != 5);
+        else if(choice == 2)
+        {
+            displayProducts(p,*n);
+        }
+        else if(choice == 3)
+        {
+            updateProduct(p,*n);
+        }
+        else if(choice == 4)
+        {
+            deleteProduct(p,n);
+        }
+        else if(choice == 5)
+        {
+            printf("Returning to main menu...\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+    }
 }
 
 void saveProducts(struct Product p[], int n)
@@ -263,7 +252,9 @@ void saveProducts(struct Product p[], int n)
 int loadProducts(struct Product p[])
 {
     FILE *fp;
-    int n = 0;
+    int n;
+
+    n = 0;
 
     fp = fopen("products.dat","rb");
 
@@ -272,9 +263,13 @@ int loadProducts(struct Product p[])
         return 0;
     }
 
-    while(n < MAX &&
-          fread(&p[n],sizeof(struct Product),1,fp) == 1)
+    while(n < MAX)
     {
+        if(fread(&p[n],sizeof(struct Product),1,fp) != 1)
+        {
+            break;
+        }
+
         n++;
     }
 

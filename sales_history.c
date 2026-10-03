@@ -4,9 +4,9 @@
 struct Sale sales[MAX_SALES];
 int salesCount = 0;
 
-void recordSale(int productId, int quantity)
+void recordSale(int productId,int quantity)
 {
-    if(salesCount >= MAX_SALES)
+    if(salesCount == MAX_SALES)
     {
         printf("Sales history is full\n");
         return;
@@ -15,7 +15,7 @@ void recordSale(int productId, int quantity)
     sales[salesCount].productId = productId;
     sales[salesCount].quantity = quantity;
 
-    salesCount++;
+    salesCount = salesCount + 1;
 }
 
 void displaySalesHistory()
@@ -42,15 +42,21 @@ void displaySalesHistory()
 int getLastThreeSales(int productId,int result[])
 {
     int i;
-    int count = 0;
+    int count;
 
-    for(i=salesCount-1;i>=0 && count<3;i--)
+    count = 0;
+
+    i = salesCount-1;
+
+    while(i >= 0 && count < 3)
     {
         if(sales[i].productId == productId)
         {
             result[count] = sales[i].quantity;
-            count++;
+            count = count + 1;
         }
+
+        i = i-1;
     }
 
     return count;
@@ -59,7 +65,9 @@ int getLastThreeSales(int productId,int result[])
 int getTotalSales()
 {
     int i;
-    int total = 0;
+    int total;
+
+    total = 0;
 
     for(i=0;i<salesCount;i++)
     {
@@ -104,6 +112,12 @@ void loadSalesHistory()
     }
 
     fread(&salesCount,sizeof(int),1,fp);
+
+    if(salesCount > MAX_SALES)
+    {
+        salesCount = MAX_SALES;
+    }
+
     fread(sales,sizeof(struct Sale),salesCount,fp);
 
     fclose(fp);
